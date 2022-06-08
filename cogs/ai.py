@@ -15,37 +15,39 @@ class AI(commands.Cog):
         self.past_respose = []
         self.generated = []
 
-    async def transformer(api, header, json):
+    async def transformer(self, header, json):
         async with aiohttp.ClientSession() as session:
-            async with session.post(api, headers=header, json=json) as resp:
+            async with session.post(self, headers=header, json=json) as resp:
                 return await resp.json()
 
     @commands.command()
-    async def changeM(ctx, *, num):
-        if str(ctx.author.id) in get_dev_users():
+    async def changeM(self, *, num):
+        if str(self.author.id) in get_dev_users():
             num = int(num)
 
             if num == 1:
                 re[10] = 1
-                await ctx.send(
+                await self.send(
                     embed=discord.Embed(
                         title="Model change",
                         description="Changed to blenderbot",
                         color=discord.Color(value=re[8]),
                     )
                 )
+
             elif num == 2:
                 re[10] = 2
-                await ctx.send(
+                await self.send(
                     embed=discord.Embed(
                         title="Model change",
                         description="Changed to dialo-gpt",
                         color=discord.Color(value=re[8]),
                     )
                 )
+
             else:
 
-                await ctx.send(
+                await self.send(
                     embed=discord.Embed(
                         title="Model change",
                         description="Bruh thats not a valid option",
@@ -53,8 +55,9 @@ class AI(commands.Cog):
                     )
                 )
 
+
         else:
-            await ctx.send(
+            await self.send(
                 embed=discord.Embed(
                     title="Model change",
                     description="F off thout isn't un dev user",
@@ -87,12 +90,11 @@ class AI(commands.Cog):
                     await msg.channel.send(
                         "https://pics.me.me/thumb_why-do-chips-get-stale-gross-i-just-eat-a-49666262.png"
                     )
-                else:
-                    if re[4] == 1:
-                        for i in ["what", "how", "when", "why", "who", "where"]:
-                            if i in msg.content.lower():
-                                await msg.channel.send("thog dont caare")
-                                break
+                elif re[4] == 1:
+                    for i in ["what", "how", "when", "why", "who", "where"]:
+                        if i in msg.content.lower():
+                            await msg.channel.send("thog dont caare")
+                            break
 
             if msg.content.lower().startswith("alfred"):
 
@@ -108,15 +110,11 @@ class AI(commands.Cog):
 
                 output = await self.transformer(api_url, header=headeras, json=payload)
 
-                if len(self.past_respose) < 50:
-                    self.past_respose.append(input_text)
-                    self.generated.append(output["generated_text"])
-                else:
+                if len(self.past_respose) >= 50:
                     self.past_respose.pop(0)
                     self.generated.pop(0)
-                    self.past_respose.append(input_text)
-                    self.generated.append(output["generated_text"])
-
+                self.past_respose.append(input_text)
+                self.generated.append(output["generated_text"])
                 print(output)
                 await msg.reply(output["generated_text"])
 

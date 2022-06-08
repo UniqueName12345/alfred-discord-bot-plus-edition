@@ -9,8 +9,7 @@ from bs4 import BeautifulSoup
 def get_repo_image_url(url):
     text = requests.get(url)
     soup = BeautifulSoup(text.content, "lxml")
-    image_url = soup.find("meta", property="og:image")['content']
-    return image_url
+    return soup.find("meta", property="og:image")['content']
 
 @dataclass
 class GitHubUserStats:
@@ -161,9 +160,10 @@ def requirements():
 
 
 def repo_stats_dict(stats: GitHubRepoStats, color: int = None):
-    info = {}
-    info["title"] = f"{stats.owner}/{stats.name}"
-    info["description"] = f"{stats.description} \nLicense: {stats.license} \n"
+    info = {
+        "title": f"{stats.owner}/{stats.name}",
+        "description": f"{stats.description} \nLicense: {stats.license} \n",
+    }
 
     if homepage := stats.homepage:
         info["description"] = info["description"] + "Homepage: " + homepage + "\n"
@@ -231,9 +231,7 @@ def user_stats_dict(stats: GitHubUserStats, color: int = None, uname: str = ""):
 def main(client, re):
     @client.command(aliases=["ghrepo", "ghr"])
     async def github_repo(ctx, *, repo):
-        stats = get_repo_stats(repo)
-
-        if stats:
+        if stats := get_repo_stats(repo):
             embed = embed_from_dict(repo_stats_dict(stats, re[8]))
         else:
             embed = embed_from_dict(
@@ -248,10 +246,8 @@ def main(client, re):
 
     @client.command(aliases=["ghuser", "ghu"])
     async def github_user(ctx, *, username: str = ''):
-        if username  == '': username = "octocat"
-        stats = get_user_stats(username)
-
-        if stats:
+        if not username: username = "octocat"
+        if stats := get_user_stats(username):
             embed = embed_from_dict(user_stats_dict(stats, re[8], username))
         else:
             embed = embed_from_dict(

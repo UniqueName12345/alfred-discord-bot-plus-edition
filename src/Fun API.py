@@ -43,9 +43,7 @@ def main(client, re):
                  requests.get(
                     f"https://api.agify.io/?name={name}").content.decode()
             )
-            st = ""
-            for i in text:
-                st += i + ":" + str(text[i]) + "\n"
+            st = "".join(f"{i}:{str(text[i])}" + "\n" for i in text)
             await ctx.send(
                 embed=discord.Embed(
                     title="Agify", description=st, color=discord.Color(value=re[8])
@@ -109,16 +107,15 @@ def main(client, re):
             embed = discord.Embed(
                 title=ip, description=st, color=discord.Color(value=re[8])
             )
-            embed.set_thumbnail(url=client.user.avatar_url_as(format="png"))
-            await ctx.send(embed=embed)
         else:
             embed = discord.Embed(
                 title="Oops",
                 description="Oops, couldnt find it :confused:",
                 color=discord.Color(value=re[8]),
             )
-            embed.set_thumbnail(url=client.user.avatar_url_as(format="png"))
-            await ctx.send(embed=embed)
+
+        embed.set_thumbnail(url=client.user.avatar_url_as(format="png"))
+        await ctx.send(embed=embed)
             
             
     @client.command(aliases=["cat"])
@@ -136,7 +133,7 @@ def main(client, re):
     async def google(ctx, *, text):
         re[0] += 1
         li = []
-        print(text, str(ctx.author))
+        print(text, ctx.author)
         for i in search(text, num=5, stop=5, pause=0):
              # https://render-tron.appspot.com/screenshot/https://discord.com/?width=1458&height=690
             embed = ef.cembed(title="Google",
@@ -157,7 +154,7 @@ def main(client, re):
         def check(reaction, user):
             return (
                 user != client.user
-                and str(reaction.emoji) in ["◀️", "▶️"]
+                and str(reaction.emoji) in {"◀️", "▶️"}
                 and reaction.message.id == message.id
             )
         while True:

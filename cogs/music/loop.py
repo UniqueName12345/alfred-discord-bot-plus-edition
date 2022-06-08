@@ -17,10 +17,7 @@ class Loop(commands.Cog):
             re[2][ctx.guild.id] = re[2].get(ctx.guild.id, -1) * -1
             if re[2].get(ctx.guild.id, 1) == 1:
                 re[7][ctx.guild.id] = -1
-            if re[2].get(ctx.guild.id, 1) < 0:
-                st = "Off"
-            else:
-                st = "_On_"
+            st = "Off" if re[2].get(ctx.guild.id, 1) < 0 else "_On_"
             await ctx.send(
                 embed=discord.Embed(
                     title="Loop", description=st, color=discord.Color(value=re[8])

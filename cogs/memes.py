@@ -23,9 +23,9 @@ class Memes(commands.Cog):
 
         def check(reaction, user):
             return (
-                    user != self.bot.user
-                    and str(reaction.emoji) in ["◀️", "▶️"]
-                    and reaction.message.id == message.id
+                user != self.bot.user
+                and str(reaction.emoji) in {"◀️", "▶️"}
+                and reaction.message.id == message.id
             )
 
         while True:
@@ -62,18 +62,18 @@ class Memes(commands.Cog):
     async def reddit_search(self, ctx, account="wholesomememes", number=1):
         req()
         if number == 1:
-            embeds = []
             a = reddit(account, single=False)
             if a[2]:
-                for i in a:
-                    embeds += [
-                        cembed(
-                            description="**" + i[0] + "**",
-                            picture=i[1],
-                            color=re[8],
-                            thumbnail=self.bot.user.avatar_url_as(format="png"),
-                        )
-                    ]
+                embeds = [
+                    cembed(
+                        description=f"**{i[0]}**",
+                        picture=i[1],
+                        color=re[8],
+                        thumbnail=self.bot.user.avatar_url_as(format="png"),
+                    )
+                    for i in a
+                ]
+
                 await self.pa1(embeds, ctx)
             else:
                 await ctx.send(embed=cembed(title=a[0], color=re[8], description=a[1]))
@@ -98,7 +98,7 @@ class Memes(commands.Cog):
                 safe_stop = 0
                 r = requests.get("https://bestlifeonline.com/funniest-cat-memes-ever/")
                 string = str(r.content.decode())
-                for i in range(0, 94):
+                for _ in range(94):
                     # https://bestlifeonline.com/funniest-cat-memes-ever/
                     n1 = string.find("<h2", safe_stop + len("<h2"))
                     n3 = string.find('<div class="number">', n1) + len(
@@ -107,10 +107,8 @@ class Memes(commands.Cog):
                     n4 = string.find("</div>", n3)
                     n2 = string.find("data-src=", n1) + len("data-src=") + 1
                     n1 = string.find('" ', n2)
-                    safe_stop = n1
                     number = int(string[n3:n4])
-                    if number >= 97:
-                        safe_stop = 0
+                    safe_stop = 0 if number >= 97 else n1
                     self.link_for_cats += [string[n2:n1]]
                 print("Finished meme")
                 self.link_for_cats += memes1()

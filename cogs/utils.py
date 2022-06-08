@@ -17,10 +17,12 @@ class Utils(commands.Cog):
         self.color_temp = extract_color(re[8])
 
     @commands.command()
-    async def set_sessionid(ctx, sessionid):
+    async def set_sessionid(self, sessionid):
         re[9] = sessionid
-        await ctx.send(
-            embed=discord.Embed(description="SessionID set", color=discord.Color(re[8]))
+        await self.send(
+            embed=discord.Embed(
+                description="SessionID set", color=discord.Color(re[8])
+            )
         )
 
     @commands.command(aliases=["cw"])
@@ -45,10 +47,11 @@ class Utils(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(
                     title="Done",
-                    description="Bitrate set to " + number,
+                    description=f"Bitrate set to {number}",
                     color=discord.Color(value=re[8]),
                 )
             )
+
         else:
             await ctx.send(
                 embed=discord.Embed(
@@ -150,7 +153,7 @@ class Utils(commands.Cog):
 
     @commands.command(aliases=["$$"])
     async def recover(self, ctx):
-        print("Recover", str(ctx.author))
+        print("Recover", ctx.author)
         if str(ctx.author.id) in dev_users:
             try:
                 load_from_file(".recover.txt")
@@ -174,13 +177,11 @@ class Utils(commands.Cog):
 
     @commands.command()
     async def load(self, ctx):
-        print("Load", str(ctx.author))
+        print("Load", ctx.author)
         req()
         try:
             cpu_per = str(int(psutil.cpu_percent()))
-            cpu_freq = (
-                    str(int(psutil.cpu_freq().current)) + "/" + str(int(psutil.cpu_freq().max))
-            )
+            cpu_freq = f"{int(psutil.cpu_freq().current)}/{int(psutil.cpu_freq().max)}"
             ram = str(psutil.virtual_memory().percent)
             swap = str(psutil.swap_memory().percent)
             usage = f"""
@@ -233,12 +234,13 @@ class Utils(commands.Cog):
                 if len(i) < 3:
                     await ctx.send(
                         embed=discord.Embed(
-                            description="**" + i[0] + ":**\n" + i[1],
+                            description=f"**{i[0]}" + ":**\n" + i[1],
                             color=discord.Color(value=re[8]),
                         )
                     )
+
                 else:
-                    await ctx.send("**" + i[0] + ":**")
+                    await ctx.send(f"**{i[0]}:**")
                     await ctx.send(embed=i[1])
                 if number <= 0:
                     break
@@ -280,8 +282,11 @@ class Utils(commands.Cog):
             if prefix_dict.get(ctx.guild.id, False):
                 prefix_dict.pop(ctx.guild.id)
             await ctx.send(
-                embed=cembed(title="Done", description=f"Prefix removed", color=re[8])
+                embed=cembed(
+                    title="Done", description="Prefix removed", color=re[8]
+                )
             )
+
         else:
             await ctx.send(
                 embed=cembed(
@@ -341,13 +346,14 @@ class Utils(commands.Cog):
         req()
         string = ""
         censor.append(text.lower())
-        for i in range(0, len(text)):
-            string = string + "-"
+        for _ in range(len(text)):
+            string = f"{string}-"
         em = discord.Embed(
-            title="Added " + string + " to the list",
+            title=f"Added {string} to the list",
             decription="Done",
             color=discord.Color(value=re[8]),
         )
+
         await ctx.send(embed=em)
 
     @commands.command()

@@ -12,35 +12,33 @@ class Games(commands.Cog):
     @commands.command(aliases=["fun"])
     async def games(self, ctx, game="", choice="bot"):
         if game == "XO":
-            if choice == "bot":
-                if self.bot.user != ctx.author:
-                    global available
-                    global sent
-                    board = reset_board()
-                    available = Emoji_list.copy()
-                    sent = await ctx.send(
-                        embed=discord.Embed(
-                            title="Tic Tac Toe by Rahul",
-                            description=board,
-                            color=discord.Color(value=re[8]),
-                        )
+            if choice == "bot" and self.bot.user != ctx.author:
+                global available
+                global sent
+                board = reset_board()
+                available = Emoji_list.copy()
+                sent = await ctx.send(
+                    embed=discord.Embed(
+                        title="Tic Tac Toe by Rahul",
+                        description=board,
+                        color=discord.Color(value=re[8]),
                     )
-                    for each in Emoji_list:
-                        await sent.add_reaction(emoji.emojize(each))
+                )
+                for each in Emoji_list:
+                    await sent.add_reaction(emoji.emojize(each))
         elif game == "Toss":
-            if choice == "bot":
-                if self.bot.user != ctx.author:
-                    set_coin_toss_message(await ctx.send(
-                        embed=discord.Embed(
-                            title="Coin Toss by Alvin",
-                            description=coin_message,
-                            color=discord.Color(value=re[8]),
-                        )
-                    ))
-                    await coin_toss_message.add_reaction(
-                        emoji.emojize(":face_with_head-bandage:")
+            if choice == "bot" and self.bot.user != ctx.author:
+                set_coin_toss_message(await ctx.send(
+                    embed=discord.Embed(
+                        title="Coin Toss by Alvin",
+                        description=coin_message,
+                        color=discord.Color(value=re[8]),
                     )
-                    await coin_toss_message.add_reaction(emoji.emojize(":hibiscus:"))
+                ))
+                await coin_toss_message.add_reaction(
+                    emoji.emojize(":face_with_head-bandage:")
+                )
+                await coin_toss_message.add_reaction(emoji.emojize(":hibiscus:"))
         else:
             await ctx.send(
                 embed=discord.Embed(

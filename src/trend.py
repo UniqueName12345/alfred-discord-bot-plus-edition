@@ -17,8 +17,7 @@ def requirements():
 def get_repo_image_url(url):
     text = requests.get(url)
     soup = BeautifulSoup(text.content, "lxml")
-    image_url = soup.find("meta", property="og:image")['content']
-    return image_url
+    return soup.find("meta", property="og:image")['content']
 
 
 def trend_embed(
@@ -69,7 +68,7 @@ def main(client: commands, re):
         def check(reaction, user):
             return (
                 user != client.user
-                and str(reaction.emoji) in ["◀️", "▶️", "⏮️", "⏭️"]
+                and str(reaction.emoji) in {"◀️", "▶️", "⏮️", "⏭️"}
                 and reaction.message.id == message.id
             )
 
@@ -102,7 +101,7 @@ def main(client: commands, re):
                 rec = await resp.json()
             await session.close()
         embeds = []
-        for index, i in enumerate(rec[0:25]):
+        for index, i in enumerate(rec[:25]):
             name = i["name"]
             author = i["author"]
             thumbnail = i["avatar"] if "avatar" in i.keys() else None

@@ -28,12 +28,11 @@ class Admin(commands.Cog):
         add_role = None
         if ctx.guild.id in mute_role:
             add_role = [i for i in ctx.guild.roles if i.id == mute_role[ctx.guild.id]][0]
-            await member.add_roles(add_role)
-            await ctx.send("Muted " + member.mention)
         else:
             add_role = discord.utils.get(ctx.guild.roles, name="dunce")
-            await member.add_roles(add_role)
-            await ctx.send("Muted " + member.mention)
+
+        await member.add_roles(add_role)
+        await ctx.send(f"Muted {member.mention}")
 
     @commands.command(aliases=["um"])
     @commands.has_permissions(kick_members=True)
@@ -43,11 +42,11 @@ class Admin(commands.Cog):
         if ctx.guild.id in mute_role:
             add_role = [i for i in ctx.guild.roles if i.id == mute_role[ctx.guild.id]][0]
             await member.remove_roles(add_role)
-            await ctx.send("Unmuted " + member.mention)
+            await ctx.send(f"Unmuted {member.mention}")
         else:
             add_role = discord.utils.get(ctx.guild.roles, name="dunce")
             await member.remove_roles(add_role)
-            await ctx.send("Unmuted " + member.mention)
+            await ctx.send(f"Unmuted {member.mention}")
             print(member, "unmuted")
 
     @commands.command()

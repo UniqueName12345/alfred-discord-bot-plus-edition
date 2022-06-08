@@ -16,9 +16,8 @@ class Emoji(commands.Cog):
         if discord.utils.get(self.client.emojis, name=emoji_name) is not None:
             emoji_list = [names.name for names in self.client.emojis if names.name == emoji_name]
             le = len(emoji_list)
-            if le >= 2:
-                if number > le - 1:
-                    number = le - 1
+            if le >= 2 and number > le - 1:
+                number = le - 1
             emoji = [names for names in self.client.emojis if names.name == emoji_name][
                 number
             ].id
@@ -41,9 +40,8 @@ class Emoji(commands.Cog):
         if discord.utils.get(self.client.emojis, name=emoji_name) is not None:
             emoji_list = [names.name for names in self.client.emojis if names.name == emoji_name]
             le = len(emoji_list)
-            if le >= 2:
-                if number > le - 1:
-                    number = le - 1
+            if le >= 2 and number > le - 1:
+                number = le - 1
             emoji = [names for names in self.client.emojis if names.name == emoji_name][number]
             webhook = await ctx.channel.create_webhook(name=ctx.author.name)
             await webhook.send(

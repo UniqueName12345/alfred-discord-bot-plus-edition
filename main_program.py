@@ -26,14 +26,13 @@ async def on_ready():
     channel = client.get_channel(dev_channel)
     DiscordComponents(client)
     for filename in os.listdir("./cogs"):
-        
+
         if filename.endswith('.py'):
             client.load_extension(f'cogs.{filename[:-3]}')
 
     for filename in os.listdir("./cogs/music"):
         
-        if filename.endswith('.py'):
-            if filename in ['repeat.py']: continue
+        if filename.endswith('.py') and filename not in ['repeat.py']:
             client.load_extension(f'cogs.music.{filename[:-3]}')
 
     try:
@@ -55,28 +54,27 @@ async def on_ready():
         print("Finished devop display")
         print("Starting imports")
         imports = ""
-        sys.path.insert(1, location_of_file + "/src")
-        for i in os.listdir(location_of_file + "/src"):
+        sys.path.insert(1, f"{location_of_file}/src")
+        for i in os.listdir(f"{location_of_file}/src"):
             if i.endswith(".py"):
                 try:
-                    requi = __import__(i[0: len(i) - 3]).requirements()
+                    requi = __import__(i[:len(i) - 3]).requirements()
                     # if requi != "":
                     #     requi = "," + requi
                     if type(requi) is str:
-                        eval(f"__import__('{i[0:len(i) - 3]}').main(client,{requi})")
+                        eval(f"__import__('{i[:len(i) - 3]}').main(client,{requi})")
                     if type(requi) is list:
-                        eval(
-                            f"__import__('{i[0:len(i) - 3]}').main(client,{','.join(requi)})"
-                        )
-                    imports = imports + i[0: len(i) - 3] + "\n"
+                        eval(f"__import__('{i[:len(i) - 3]}').main(client,{','.join(requi)})")
+                    imports = imports + i[:len(i) - 3] + "\n"
                 except Exception as e:
                     await channel.send(
                         embed=discord.Embed(
-                            title="Error in plugin " + i[0: len(i) - 3],
+                            title="Error in plugin " + i[: len(i) - 3],
                             description=str(e),
                             color=discord.Color(value=re[8]),
                         )
                     )
+
         await channel.send(
             embed=discord.Embed(
                 title="Successfully imported",
@@ -84,7 +82,7 @@ async def on_ready():
                 color=discord.Color(value=re[8]),
             )
         )
-    
+
     except Exception as e:
         mess = await channel.send(
             embed=discord.Embed(
@@ -113,7 +111,7 @@ async def youtube_loop():
         await client.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=str(len(client.guilds)) + " servers",
+                name=f"{len(client.guilds)} servers",
             )
         )
 
@@ -163,13 +161,12 @@ async def wait_for_ready():
 async def on_message_delete(message):
     if message.channel.id not in list(deleted_message.keys()):
         deleted_message[message.channel.id] = []
-    if len(message.embeds) <= 0:
-        if not message.author.bot:
+    if not message.author.bot:
+        if len(message.embeds) <= 0:
             deleted_message[message.channel.id].append(
                 (str(message.author), message.content)
             )
-    else:
-        if not message.author.bot:
+        else:
             deleted_message[message.channel.id].append(
                 (str(message.author), message.embeds[0], True)
             )
@@ -181,12 +178,13 @@ async def on_member_join(member):
     print(member.guild)
     if member.guild.id == 841026124174983188:
         channel = client.get_channel(841026124174983193)
-    await channel.send(member.mention + " is here")
+    await channel.send(f"{member.mention} is here")
     embed = discord.Embed(
         title="Welcome!!!",
-        description="Welcome to the server, " + member.name,
+        description=f"Welcome to the server, {member.name}",
         color=discord.Color(value=re[8]),
     )
+
     embed.set_thumbnail(
         url="https://image.shutterstock.com/image-vector/welcome-poster-spectrum-brush-strokes-260nw-1146069941.jpg"
     )
@@ -202,12 +200,13 @@ async def on_member_remove(member):
     else:
         channel = discord.utils.get(member.guild.channels, name="announcement")
 
-    await channel.send(member.mention + " is no longer here")
+    await channel.send(f"{member.mention} is no longer here")
     embed = discord.Embed(
         title="Bye!!!",
-        description="Hope you enjoyed your stay " + member.name,
+        description=f"Hope you enjoyed your stay {member.name}",
         color=discord.Color(value=re[8]),
     )
+
     embed.set_thumbnail(
         url="https://thumbs.dreamstime.com/b/bye-bye-man-says-45256525.jpg"
     )

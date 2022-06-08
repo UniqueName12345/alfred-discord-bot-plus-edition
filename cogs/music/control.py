@@ -60,9 +60,9 @@ class Controls(commands.Cog):
                 and ctx.author.voice
                 and ctx.author.voice.channel
         ):
-            if not str(ctx.guild.id) in queue_song:
+            if str(ctx.guild.id) not in queue_song:
                 queue_song[str(ctx.guild.id)] = []
-            if not str(ctx.guild.id) in re[3]:
+            if str(ctx.guild.id) not in re[3]:
                 re[3][str(ctx.guild.id)] = 0
             channel = ctx.author.voice.channel.id
             vc_channel[str(ctx.guild.id)] = channel
@@ -82,8 +82,8 @@ class Controls(commands.Cog):
                             ctx, queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
                         )
                         if (
-                                not queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
-                                    in da1.keys()
+                            queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
+                            not in da1.keys()
                         ):
                             da1[
                                 queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
@@ -126,10 +126,11 @@ class Controls(commands.Cog):
                         voice = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
                         name = convert_to_url(name)
                         htm = urllib.request.urlopen(
-                            "https://www.youtube.com/results?search_query=" + name
+                            f"https://www.youtube.com/results?search_query={name}"
                         )
+
                         video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-                        url = "https://www.youtube.com/watch?v=" + video[0]
+                        url = f"https://www.youtube.com/watch?v={video[0]}"
                         URL, name_of_the_song = youtube_download1(ctx, url)
                         voice.stop()
                         voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
@@ -249,8 +250,8 @@ class Controls(commands.Cog):
                         )
                     )
                 if (
-                        not queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
-                            in da1.keys()
+                    queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
+                    not in da1.keys()
                 ):
                     da1[
                         queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]

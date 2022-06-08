@@ -13,11 +13,12 @@ class Leave(commands.Cog):
     async def clearqueue(self, ctx):
         req()
         mem = [
-            (str(i.name) + "#" + str(i.discriminator))
+            f"{str(i.name)}#{str(i.discriminator)}"
             for i in discord.utils.get(
                 ctx.guild.voice_channels, id=vc_channel[str(ctx.guild.id)]
             ).members
         ]
+
         if mem.count(str(ctx.author)) > 0:
             if len(queue_song[str(ctx.guild.id)]) > 0:
                 queue_song[str(ctx.guild.id)].clear()

@@ -61,7 +61,7 @@ def quad(eq):
         if part in ["+", "-"]:
             continue
 
-        symbol = -1 if index - 1 >= 0 and parts[index - 1] == "-" else 1
+        symbol = -1 if index >= 1 and parts[index - 1] == "-" else 1
 
         if part.endswith("x^2"):
             coeff = part[:-3]
@@ -80,20 +80,20 @@ def quad(eq):
         return "Not Real"
     if determinant == 0:
         root = -b / (2 * a)
-        return "Equation has one root:" + str(root)
+        return f"Equation has one root:{str(root)}"
 
     if determinant > 0:
         determinant = determinant ** 0.5
         root1 = (-b + determinant) / (2 * a)
         root2 = (-b - determinant) / (2 * a)
-        return "This equation has two roots: " + str(root1) + "," + str(root2)
+        return f"This equation has two roots: {str(root1)},{str(root2)}"
 
 
 async def memes2():
     st = await get_async("https://cheezburger.com/14858757/40-dumb-memes-for-distractible-scrollers")
     stop = 0
     link = []
-    for i in range(0, 40):
+    for _ in range(40):
         a = st.find("<img class='resp-media' src='", stop) + len(
             "<img class='resp-media' src='"
         )
@@ -107,7 +107,7 @@ async def memes1():
     st = await get_async("http://www.quickmeme.com/")
     stop = 0
     link = []
-    for i in range(10):
+    for _ in range(10):
         a = st.find('"post-image" src="', stop) + len('post-image" src="') + 1
         b = st.find('" alt', a)
         stop = b
@@ -121,7 +121,7 @@ async def memes3():
     )
     stop = 0
     link = []
-    for i in range(20):
+    for _ in range(20):
         a = st.find('srcset="', stop) + len('srcset="')
         b = st.find(".jpg", a) + len(".jpg")
         stop = b
@@ -148,7 +148,7 @@ def get_sessionid(username, password):
 
         m = hashlib.md5()
         m.update(seed.encode("utf-8") + volatile_seed.encode("utf-8"))
-        return "android-" + m.hexdigest()[:16]
+        return f"android-{m.hexdigest()[:16]}"
 
     device_id = generate_device_id(username, password)
 
@@ -182,14 +182,14 @@ def instagram_get1(account, color, SESSIONID):
         user = InstagramUser(account, sessionid=SESSIONID)
         all_posts = user.posts
         list_of_posts = []
-        number = 0
-        for i in all_posts[0:7]:
+        for number, i in enumerate(all_posts[:7]):
             url = i.post_url
             pos = Post(url)
             headers = {
                 "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Mobile Safari/537.36 Edg/87.0.664.57",
-                "cookie": "sessionid=" + SESSIONID + ";",
+                "cookie": f"sessionid={SESSIONID};",
             }
+
             pos.scrape(headers=headers)
             descript = pos.caption
             thumb = user.profile_picture_url
@@ -199,7 +199,6 @@ def instagram_get1(account, color, SESSIONID):
             embed.set_image(url=user.posts[number].post_source)
             embed.set_thumbnail(url=thumb)
             list_of_posts.append((embed, url))
-            number += 1
         return list_of_posts
 
     except Exception as e:
@@ -221,10 +220,10 @@ def get_youtube_url(url):
     stop = 0
     li = []
 
-    for i in range(10):
+    for _ in range(10):
         a = st.find("/watch?v", stop)
         b = st.find('"', a)
-        li = li + ["https://www.youtube.com" + st[a:b]]
+        li = li + [f"https://www.youtube.com{st[a:b]}"]
         stop = b
     return li
 
@@ -310,8 +309,7 @@ def check_win(board):
         or board[0] == board[4] == board[8] == emoji.emojize(":cross_mark:")
         or board[2] == board[4] == board[6] == emoji.emojize(":cross_mark:")
     ):
-        result = "You won"
-        return result
+        return "You won"
     elif (
         board[0] == board[1] == board[2] == emoji.emojize(":hollow_red_circle:")
         or board[3] == board[4] == board[5] == emoji.emojize(":hollow_red_circle:")
@@ -322,23 +320,19 @@ def check_win(board):
         or board[0] == board[4] == board[8] == emoji.emojize(":hollow_red_circle:")
         or board[2] == board[4] == board[6] == emoji.emojize(":hollow_red_circle:")
     ):
-        result = "Alfred won"
-        return result
+        return "Alfred won"
     else:
         return " "
 
 
 def reddit(account="wholesomememes", number=25, single=True):
     a = requests.get(f"https://meme-api.herokuapp.com/gimme/{account}/{number}").json()
-    l = []
-    if not "message" in a.keys():
-        for i in a["memes"]:
-            l.append((i["title"], i["url"]))
-        if single:
-            l = [random.choice(l)]
-        return l
-    else:
+    if "message" in a.keys():
         return [(a["code"], a["message"], False)]
+    l = [(i["title"], i["url"]) for i in a["memes"]]
+    if single:
+        l = [random.choice(l)]
+    return l
 
 
 help1 = "**COMMANDS**\n'google <text to search> \n'help to get this screen\n'wikipedia Topic \n'python_shell <Expression> for python shell\n'get_req for no. of requests so far\n'entrar for the latest announcements from Entrar\n"
@@ -355,21 +349,21 @@ help_list = [help1, help2, help3, help4, help5]
 
 def protect(text):
     return (
-        str(text).find("username") == -1
-        and str(text).find("os.") == -1
-        and str(text).find("ctx.") == -1
-        and str(text).find("__import__") == -1
-        and str(text).find("sys.") == -1
-        and str(text).find("psutil.") == -1
-        and str(text).find("clear") == -1
-        and str(text).find("dev_users") == -1
-        and str(text).find("remove") == -1
-        and str(text).find("class.") == -1
-        and str(text).find("subclass()") == -1
-        and str(text).find("client") == -1
-        and str(text).find("quit") == -1
-        and str(text).find("exit") == -1
-        and str(text).find("while True") == -1
+        "username" not in str(text)
+        and "os." not in str(text)
+        and "ctx." not in str(text)
+        and "__import__" not in str(text)
+        and "sys." not in str(text)
+        and "psutil." not in str(text)
+        and "clear" not in str(text)
+        and "dev_users" not in str(text)
+        and "remove" not in str(text)
+        and "class." not in str(text)
+        and "subclass()" not in str(text)
+        and "client" not in str(text)
+        and "quit" not in str(text)
+        and "exit" not in str(text)
+        and "while True" not in str(text)
     )
 
 
@@ -447,7 +441,7 @@ def equalise(all_strings):
 
 def extract_color(color):
     print(color)
-    hex_string = "#"+str(hex(color))[2:]
+    hex_string = f"#{hex(color)[2:]}"
     print(hex_string)
     return (i/256 for i in ImageColor.getrgb(hex_string))
 
@@ -490,10 +484,7 @@ async def get_async(url,headers = {},kind = "content"):
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(url) as resp:
             if resp.status in list(range(200,299)):
-                if kind == "json":                
-                    output = await resp.json()
-                else:
-                    output = await resp.text()
+                output = await resp.json() if kind == "json" else await resp.text()
             else:
                 output = None
         await session.close()

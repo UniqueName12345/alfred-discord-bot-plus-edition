@@ -206,10 +206,9 @@ class Player(wavelink.Player):
         elif len(tracks) == 1:
             self.queue.add(tracks[0])
             await ctx.send(f"Added {tracks[0].title} to the queue.")
-        else:
-            if (track := await self.choose_track(ctx, tracks)) is not None:
-                self.queue.add(track)
-                await ctx.send(f"Added {track.title} to the queue.")
+        elif (track := await self.choose_track(ctx, tracks)) is not None:
+            self.queue.add(track)
+            await ctx.send(f"Added {track.title} to the queue.")
 
         if not self.is_playing and not self.queue.is_empty:
             await self.start_playback()
@@ -271,9 +270,12 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if not member.bot and after.channel is None:
-            if not [m for m in before.channel.members if not m.bot]:
-                await self.get_player(member.guild).teardown()
+        if (
+            not member.bot
+            and after.channel is None
+            and not [m for m in before.channel.members if not m.bot]
+        ):
+            await self.get_player(member.guild).teardown()
 
     @wavelink.WavelinkMixin.listener()
     async def on_node_ready(self, node):

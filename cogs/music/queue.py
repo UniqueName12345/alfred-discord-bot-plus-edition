@@ -16,14 +16,12 @@ class Queue(commands.Cog):
 
     @commands.command()
     async def show_playlist(self, ctx, *, name):
-        num = 0
-        embeds = []
         if name in list(da.keys()):
             st = ""
-            for i in da[name]:
-                num += 1
+            embeds = []
+            for num, i in enumerate(da[name], start=1):
                 if i in da1:
-                    st += str(num) + ". " + str(da1[i]) + "\n"
+                    st += f"{num}. {str(da1[i])}" + "\n"
                 if num % 10 == 0 and num != 0:
                     embeds.append(
                         cembed(
@@ -69,10 +67,10 @@ class Queue(commands.Cog):
                         for song in fetch_spotify_playlist(name, 500):
                             try:
                                 name = convert_to_url(song)
-                                sear = "https://www.youtube.com/results?search_query=" + name
+                                sear = f"https://www.youtube.com/results?search_query={name}"
                                 htm = urllib.request.urlopen(sear)
                                 video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-                                url = "https://www.youtube.com/watch?v=" + video[0]
+                                url = f"https://www.youtube.com/watch?v={video[0]}"
                                 st = ""
                                 num = 0
                                 name_of_the_song = await get_name(url)
@@ -86,10 +84,10 @@ class Queue(commands.Cog):
                 elif 'track' in name:
                     name = spotify.spotify_track(name)
                     name = convert_to_url(name)
-                    sear = "https://www.youtube.com/results?search_query=" + name
+                    sear = f"https://www.youtube.com/results?search_query={name}"
                     htm = urllib.request.urlopen(sear)
                     video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-                    url = "https://www.youtube.com/watch?v=" + video[0]
+                    url = f"https://www.youtube.com/watch?v={video[0]}"
                     st = ""
                     num = 0
                     name_of_the_song = await get_name(url)
@@ -98,10 +96,10 @@ class Queue(commands.Cog):
                     queue_song[str(ctx.guild.id)].append(url)
             else:
                 name = convert_to_url(name)
-                sear = "https://www.youtube.com/results?search_query=" + name
+                sear = f"https://www.youtube.com/results?search_query={name}"
                 htm = urllib.request.urlopen(sear)
                 video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-                url = "https://www.youtube.com/watch?v=" + video[0]
+                url = f"https://www.youtube.com/watch?v={video[0]}"
 
                 st = ""
                 await ctx.send("Added to queue")
@@ -112,7 +110,7 @@ class Queue(commands.Cog):
                 queue_song[str(ctx.guild.id)].append(url)
             for i in queue_song[str(ctx.guild.id)]:
                 if num >= len(queue_song[str(ctx.guild.id)]) - 10:
-                    if not i in da1.keys():
+                    if i not in da1.keys():
                         da1[i] = await get_name(i)
                     st = st + str(num) + ". " + da1[i].replace("&quot", "'") + "\n"
                 num += 1
@@ -137,35 +135,32 @@ class Queue(commands.Cog):
             st = ""
             if len(queue_song[str(ctx.guild.id)]) < 30:
                 for i in queue_song[str(ctx.guild.id)]:
-                    if not i in da1.keys():
+                    if i not in da1.keys():
                         da1[i] = youtube_info(i)["title"]
                     st = st + str(num) + ". " + da1[i] + "\n"
                     num += 1
             else:
                 adfg = 0
-                num = -1
-                for i in queue_song[str(ctx.guild.id)]:
-                    num += 1
+                for num, i in enumerate(queue_song[str(ctx.guild.id)]):
                     try:
                         if re[3][str(ctx.guild.id)] < 10:
                             if num < 15:
-                                if not i in da1.keys():
+                                if i not in da1.keys():
                                     da1[i] = youtube_info(i)["title"]
                                 st = st + str(num) + ". " + da1[i] + "\n"
                         elif re[3][str(ctx.guild.id)] > (
                                 len(queue_song[str(ctx.guild.id)]) - 10
                         ):
                             if num > (len(queue_song[str(ctx.guild.id)]) - 15):
-                                if not i in da1.keys():
+                                if i not in da1.keys():
                                     da1[i] = youtube_info(i)["title"]
                                 st = st + str(num) + ". " + da1[i] + "\n"
-                        else:
-                            if (
+                        elif (
                                     re[3][str(ctx.guild.id)] - 10 < num < re[3][str(ctx.guild.id)] + 10
                             ):
-                                if not i in da1.keys():
-                                    da1[i] = youtube_info(i)["title"]
-                                st = st + str(num) + ". " + da1[i] + "\n"
+                            if i not in da1.keys():
+                                da1[i] = youtube_info(i)["title"]
+                            st = st + str(num) + ". " + da1[i] + "\n"
                     except Exception as e:
                         pass
 
@@ -197,14 +192,12 @@ class Queue(commands.Cog):
     @commands.command(aliases=["s_q"])
     async def search_queue(self, ctx, part):
         st = ""
-        index = 0
         found_songs = 0
-        for i in queue_song[str(ctx.guild.id)]:
+        for index, i in enumerate(queue_song[str(ctx.guild.id)]):
             if i in da1:
                 found_songs += 1
                 if da1[i].lower().find(part.lower()) != -1:
-                    st += str(index) + ". " + da1[i] + "\n"
-            index += 1
+                    st += f"{str(index)}. {da1[i]}" + "\n"
         if st == "":
             st = "Not found"
         if len(queue_song[str(ctx.guild.id)]) - found_songs > 0:
