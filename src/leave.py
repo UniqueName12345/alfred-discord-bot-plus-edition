@@ -22,10 +22,11 @@ def main(client, dev_users, re):
                 await ctx.send(
                     embed=discord.Embed(
                         title="Done",
-                        description="I left the server " + server_name,
+                        description=f"I left the server {server_name}",
                         color=discord.Color(value=re[8]),
                     )
                 )
+
         else:
             await ctx.send(
                 embed=discord.Embed(

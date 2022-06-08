@@ -22,17 +22,15 @@ class CodeExecutor:
             runtime_url = "https://emkc.org/api/v2/piston/runtimes"
             r = requests.get(runtime_url)
             data = json.loads(r.text)
-            runtimes: List[Dict[str, Union[str, List[str]]]] = []
-            for langs in data:
-                runtimes.append(
-                    {
-                        "language": langs["language"],
-                        "version": langs["version"],
-                        "aliases": [i for i in langs["aliases"]],
-                    }
-                )
+            return [
+                {
+                    "language": langs["language"],
+                    "version": langs["version"],
+                    "aliases": list(langs["aliases"]),
+                }
+                for langs in data
+            ]
 
-            return runtimes
 
         except Exception as e:
             traceback.print_exc(e)
@@ -69,12 +67,14 @@ class CodeExecutor:
 
             resp = requests.post(execute_url, json=payload)
 
-            if resp.status_code == 200:
-                data = json.loads(resp.text)
+            if resp.status_code != 200:
+                return f"Error: {resp.status_code}"
 
-                run_data = data["run"]
+            data = json.loads(resp.text)
 
-                return f"""
+            run_data = data["run"]
+
+            return f"""
 Exit Code: {run_data["code"]}
 
 Output:
@@ -82,9 +82,6 @@ Output:
 {run_data["output"]}
 ```
                 """
-
-            else:
-                return f"Error: {resp.status_code}"
 
         except Exception as e:
             traceback.print_exc(e)
@@ -95,11 +92,7 @@ history = {}
 
 
 def filter_graves(code):
-    actual_code = ""
-    for i in code.split("\n"):
-        if not i.startswith("```"):
-            actual_code += i + "\n"
-    return actual_code
+    return "".join(i + "\n" for i in code.split("\n") if not i.startswith("```"))
 
 
 def requirements():

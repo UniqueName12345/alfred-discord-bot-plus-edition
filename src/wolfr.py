@@ -33,7 +33,7 @@ def main(client, re, AiD, dev_channel):
             for i in res["pod"]:
                 try:
                     a = (str(i["@title"]), str(i["subpod"]["img"]["@alt"]))
-                    if a[0] == "Number line" or a[0] == "Plot":
+                    if a[0] in ["Number line", "Plot"]:
                         a = ("\n", "\n")
                         pic = str(i["subpod"]["img"]["@src"])
                     st += f"**{a[0]}**\n{a[1]}\n\n"
@@ -65,9 +65,8 @@ def main(client, re, AiD, dev_channel):
             a = requests.get(
                 f"http://api.wolframalpha.com/v1/simple?appid={AiD}&i={question}&layout=labelbar&width=1500"
             ).content
-            file = open("output.png", "wb")
-            file.write(a)
-            file.close()
+            with open("output.png", "wb") as file:
+                file.write(a)
             embed = discord.Embed(
                 title="Wolfram",
                 description="This result is from Wolfram",

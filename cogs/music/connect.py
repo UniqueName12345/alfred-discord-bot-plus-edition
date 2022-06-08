@@ -17,12 +17,12 @@ class Connect(commands.Cog):
 
     @commands.command(aliases=["cm"])
     async def connect_music(self, ctx, channel=""):
-        print("Connect music", str(ctx.author))
+        print("Connect music", ctx.author)
         try:
             req()
-            if not str(ctx.guild.id) in queue_song:
+            if str(ctx.guild.id) not in queue_song:
                 queue_song[str(ctx.guild.id)] = []
-            if not str(ctx.guild.id) in re[3]:
+            if str(ctx.guild.id) not in re[3]:
                 re[3][str(ctx.guild.id)] = 0
             if channel == "":
                 if ctx.author.voice and ctx.author.voice.channel:
@@ -47,28 +47,27 @@ class Connect(commands.Cog):
                             color=discord.Color(value=re[8]),
                         )
                     )
+            elif channel in [i.name for i in ctx.guild.voice_channels]:
+                voicechannel = discord.utils.get(ctx.guild.voice_channels, name=channel)
+                vc_channel[str(ctx.guild.id)] = voicechannel.id
+                await voicechannel.connect()
+                voice = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+                await ctx.send(
+                    embed=discord.Embed(
+                        title="",
+                        description="Connected\nBitrate of the channel: "
+                                    + str(ctx.voice_client.channel.bitrate // 1000),
+                        color=discord.Color(value=re[8]),
+                    )
+                )
             else:
-                if channel in [i.name for i in ctx.guild.voice_channels]:
-                    voicechannel = discord.utils.get(ctx.guild.voice_channels, name=channel)
-                    vc_channel[str(ctx.guild.id)] = voicechannel.id
-                    await voicechannel.connect()
-                    voice = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="",
-                            description="Connected\nBitrate of the channel: "
-                                        + str(ctx.voice_client.channel.bitrate // 1000),
-                            color=discord.Color(value=re[8]),
-                        )
+                await ctx.send(
+                    embed=discord.Embed(
+                        title="",
+                        description="The voice channel does not exist",
+                        color=discord.Color(value=re[8]),
                     )
-                else:
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="",
-                            description="The voice channel does not exist",
-                            color=discord.Color(value=re[8]),
-                        )
-                    )
+                )
 
         except Exception as e:
             await ctx.send(

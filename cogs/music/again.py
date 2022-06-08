@@ -18,9 +18,9 @@ class Again(commands.Cog):
     async def again(self, ctx):
         req()
         if ctx.author.voice and ctx.author.voice.channel:
-            if not str(ctx.guild.id) in queue_song:
+            if str(ctx.guild.id) not in queue_song:
                 queue_song[str(ctx.guild.id)] = []
-            if not str(ctx.guild.id) in re[3]:
+            if str(ctx.guild.id) not in re[3]:
                 re[3][str(ctx.guild.id)] = 0
             if discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild) is None:
                 channel = ctx.author.voice.channel.id
@@ -39,8 +39,8 @@ class Again(commands.Cog):
                         ctx.voice_client.channel.bitrate // 1000
                     )
                     if (
-                            not queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
-                                in da1.keys()
+                        queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]
+                        not in da1.keys()
                     ):
                         da1[
                             queue_song[str(ctx.guild.id)][re[3][str(ctx.guild.id)]]

@@ -28,11 +28,11 @@ def main(client, re):
     async def search_emoji(ctx, name):
         try:
             emoji_names = [i.name for i in client.emojis]
-            st = ""
-            for i in emoji_names:
-                if i.lower().find(name.lower()) != -1:
-                    st += i + "\n"
-            if st == "":
+            st = "".join(
+                i + "\n" for i in emoji_names if i.lower().find(name.lower()) != -1
+            )
+
+            if not st:
                 st = "Not found"
             embed = discord.Embed(
                 title="Emojis found", description=st, color=discord.Color(value=re[8])

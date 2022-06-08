@@ -22,7 +22,7 @@ class Sudo(commands.Cog):
         if str(ctx.author.id) == "432801163126243328":
             dev_users.remove(str(member.id))
             set_dev_users(dev_users)
-            await ctx.send(member.mention + " is no longer a dev")
+            await ctx.send(f"{member.mention} is no longer a dev")
         else:
             await ctx.send(
                 embed=discord.Embed(
@@ -36,10 +36,10 @@ class Sudo(commands.Cog):
     async def add_dev(self, ctx, member: discord.Member):
         print(member)
         dev_users = get_dev_users()
-        print("Add dev", str(ctx.author))
+        print("Add dev", ctx.author)
         if str(ctx.author.id) in dev_users:
             set_dev_users(dev_users + [str(member.id)])
-            await ctx.send(member.mention + " is a dev now")
+            await ctx.send(f"{member.mention} is a dev now")
         else:
             await ctx.send(
                 embed=discord.Embed(
@@ -49,15 +49,15 @@ class Sudo(commands.Cog):
                 )
             )
     @commands.command()
-    async def dev_test(ctx, id:discord.Member=None):
+    async def dev_test(self, id:discord.Member=None):
         dev_users = get_dev_users()
         if id:
             if str(id.id) in dev_users:
-              await ctx.send(f"{id} is a dev!")
+                await self.send(f"{id} is a dev!")
             else:
-              await ctx.send(f"{id} is not a dev!")
+                await self.send(f"{id} is not a dev!")
         else:
-            await ctx.send("You need to mention someone")
+            await self.send("You need to mention someone")
 
     @commands.command(aliases=["script"])
     async def add_access_to_script(self, ctx, member: discord.Member, ti="5"):
@@ -105,7 +105,7 @@ class Sudo(commands.Cog):
     @commands.command()
     async def dev_op(self, ctx):
         if str(ctx.author.id) in get_dev_users():
-            print("devop", str(ctx.author))
+            print("devop", ctx.author)
             channel = self.client.get_channel(dev_channel)
             await devop_mtext(self.client, channel, re[8])
         else:
@@ -115,7 +115,7 @@ class Sudo(commands.Cog):
 
     @commands.command()
     async def reset_from_backup(self, ctx):
-        print("reset_from_backup", str(ctx.author))
+        print("reset_from_backup", ctx.author)
         dev_users = get_dev_users()
         channel = self.client.get_channel(dev_channel)
         if str(ctx.author.id) in dev_users:
@@ -161,10 +161,11 @@ class Sudo(commands.Cog):
                 await ctx.send(
                     embed=discord.Embed(
                         title="Docs",
-                        description=str(eval(name + ".__doc__")),
+                        description=str(eval(f"{name}.__doc__")),
                         color=discord.Color(value=re[8]),
                     )
                 )
+
             else:
                 await ctx.send(
                     embed=discord.Embed(
@@ -206,7 +207,7 @@ class Sudo(commands.Cog):
     @commands.command(aliases=["m"])
     async def python_shell(self, ctx, *, text):
         req()
-        print("Python Shell", text, str(ctx.author))
+        print("Python Shell", text, ctx.author)
         dev_users = get_dev_users()
         if str(ctx.author.id) in dev_users:
             if str(ctx.author.guild.id) != "727061931373887531":
@@ -217,9 +218,10 @@ class Sudo(commands.Cog):
                     print(text)
                     em = discord.Embed(
                         title=text,
-                        description=text + "=" + str(a),
+                        description=f"{text}={str(a)}",
                         color=discord.Color(value=re[8]),
                     )
+
                     em.set_thumbnail(
                         url="https://engineering.fb.com/wp-content/uploads/2016/05/2000px-Python-logo-notext.svg_.png"
                     )
@@ -258,9 +260,7 @@ class Sudo(commands.Cog):
         if (ctx.author.id in temp_dev and protect(text)) or (
                 str(ctx.author.id) in dev_users
         ):
-            mysql_password = "Denied"
-            if text.find("passwd=") != -1:
-                mysql_password = os.getenv("mysql")
+            mysql_password = os.getenv("mysql") if text.find("passwd=") != -1 else "Denied"
             text = text.replace("```py", "```")
             text = text[3:-3].strip()
             f = StringIO()

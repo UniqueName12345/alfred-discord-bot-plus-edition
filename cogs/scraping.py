@@ -89,7 +89,7 @@ class Scraping(commands.Cog):
         news_list = self.googlenews.get_texts()
         self.googlenews.clear()
         string = ""
-        for i in range(0, 10):
+        for i in range(10):
             string = string + str(i) + ". " + news_list[i] + "\n"
         await ctx.send(
             embed=cembed(
@@ -113,12 +113,11 @@ class Scraping(commands.Cog):
                 data = data[0]
                 word = data["word"]
                 description = "**Here's What I found:**\n\n"
-                if "phonetics" in data.keys():
-                    if "text" in data["phonetics"][0]:
-                        phonetics = (
-                                "**Phonetics:**\n" + data["phonetics"][0]["text"] + "\n\n"
-                        )
-                        description += phonetics
+                if "phonetics" in data.keys() and "text" in data["phonetics"][0]:
+                    phonetics = (
+                            "**Phonetics:**\n" + data["phonetics"][0]["text"] + "\n\n"
+                    )
+                    description += phonetics
                 if "origin" in list(data.keys()):
                     origin = "**Origin: **" + data["origin"] + "\n\n"
                     description += origin
@@ -160,10 +159,11 @@ class Scraping(commands.Cog):
             await ctx.defer()
             t = str(search(text)[0].encode("utf-8"))
             em = discord.Embed(
-                title=str(t).title(),
+                title=t.title(),
                 description=str(summary(t, sentences=5)),
                 color=discord.Color(value=re[8]),
             )
+
             em.set_thumbnail(
                 url="https://1000logos.net/wp-content/uploads/2017/05/Wikipedia-logos.jpg"
             )
@@ -183,10 +183,11 @@ class Scraping(commands.Cog):
         req()
         t = str(search(text)[0].encode("utf-8"))
         em = discord.Embed(
-            title=str(t).title(),
+            title=t.title(),
             description=str(summary(t, sentences=5)),
             color=discord.Color(value=re[8]),
         )
+
         em.set_thumbnail(
             url="https://1000logos.net/wp-content/uploads/2017/05/Wikipedia-logos.jpg"
         )

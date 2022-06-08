@@ -12,10 +12,11 @@ def main(client, re):
             await ctx.send(
                 embed=discord.Embed(
                     title="That dude's gone forever",
-                    description=member.name + " was banned by " + ctx.author.name,
+                    description=f"{member.name} was banned by {ctx.author.name}",
                     color=discord.Color(value=re[8]),
                 )
             )
+
         else:
             await ctx.send(
                 embed=discord.Embed(
@@ -32,10 +33,11 @@ def main(client, re):
             await ctx.send(
                 embed=discord.Embed(
                     title="Kicked",
-                    description=member.name + " was kicked by " + ctx.author.name,
+                    description=f"{member.name} was kicked by {ctx.author.name}",
                     color=discord.Color(value=re[8]),
                 )
             )
+
         else:
             await ctx.send(
                 embed=discord.Embed(

@@ -61,15 +61,15 @@ def reset_board():
     global board
     board = ""
     for i in range(1, 10):
-        board = board + emoji.emojize(":keycap_" + str(i) + ":") + " | "
+        board = board + emoji.emojize(f":keycap_{str(i)}:") + " | "
         if i % 3 == 0:
             board = board + "\n----    ----    ----\n"
     return board
     
 #global board, Emoji_list
 board = reset_board()
-Emoji_list = [emoji.emojize(":keycap_" + str(i) + ":") for i in range(1, 10)]
-Raw_Emoji_list = [emoji.emojize(":keycap_" + str(i) + ":") for i in range(1, 10)]
+Emoji_list = [emoji.emojize(f":keycap_{str(i)}:") for i in range(1, 10)]
+Raw_Emoji_list = [emoji.emojize(f":keycap_{str(i)}:") for i in range(1, 10)]
 dictionary = dict(zip(Raw_Emoji_list, Emoji_list))
 
 
@@ -151,9 +151,9 @@ async def pa1(embeds, ctx):
 
     def check(reaction, user):
         return (
-                user != client.user
-                and str(reaction.emoji) in ["◀️", "▶️"]
-                and reaction.message.id == message.id
+            user != client.user
+            and str(reaction.emoji) in {"◀️", "▶️"}
+            and reaction.message.id == message.id
         )
 
     while True:
@@ -204,13 +204,13 @@ def save_to_file(a=""):
 
     def start_writing(file):
         file.write(f"mute_role={str(mute_role)}\n")
-        file.write("censor=" + str(censor) + "\n")
-        file.write("da=" + str(da) + "\n")
-        file.write("da1=" + str(da1) + "\n")
-        file.write("queue_song=" + str(queue_song) + "\n")
-        file.write("a_channels=" + str(a_channels) + "\n")
-        file.write("re=" + str(re) + "\n")
-        file.write("dev_users=" + str(dev_users) + "\n")
+        file.write(f"censor={str(censor)}" + "\n")
+        file.write(f"da={str(da)}" + "\n")
+        file.write(f"da1={str(da1)}" + "\n")
+        file.write(f"queue_song={str(queue_song)}" + "\n")
+        file.write(f"a_channels={str(a_channels)}" + "\n")
+        file.write(f"re={str(re)}" + "\n")
+        file.write(f"dev_users={str(dev_users)}" + "\n")
         file.write(f"prefix_dict={str(prefix_dict)}\n")
         # file.write("entr=" + str(entr) + "\n")
         file.close()

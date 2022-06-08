@@ -17,10 +17,7 @@ class AutoPlay(commands.Cog):
             re[7][ctx.guild.id] = re[7].get(ctx.guild.id, -1) * -1
             if re[7].get(ctx.guild.id, -1) == 1:
                 re[2][ctx.guild.id] = -1
-            if re[7][ctx.guild.id] < 0:
-                st = "Off"
-            else:
-                st = "_On_"
+            st = "Off" if re[7][ctx.guild.id] < 0 else "_On_"
             await ctx.send(
                 embed=discord.Embed(
                     title="Autoplay", description=st, color=discord.Color(value=re[8])

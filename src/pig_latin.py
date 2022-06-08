@@ -16,7 +16,7 @@ def main(client, re):
             a.remove(a[0])
 
             a = "".join(a)
-            output += a + " "
+            output += f"{a} "
         await ctx.send(
             embed=discord.Embed(
                 title="igpay atinlay",
@@ -30,11 +30,11 @@ def main(client, re):
         output = ""
         for i in data.split(" "):
             b = i.lower()
-            for i in range(1, 3):
+            for _ in range(1, 3):
                 b = b[:-1]
 
-            b = b[len(b) - 1] + b[0 : len(b) - 1]
-            output += b + " "
+            b = b[len(b) - 1] + b[:-1]
+            output += f"{b} "
         await ctx.send(
             embed=discord.Embed(
                 title="English Again",

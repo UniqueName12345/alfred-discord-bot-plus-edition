@@ -4,10 +4,10 @@ import os
 
 class Table:
     def __init__(self, filename):
-        self.filename = filename+".csv"
+        self.filename = f"{filename}.csv"
         with open(self.filename, mode = "r") as file:
             self.reader = list(csv.reader(file))
-        self.length = len(list(self.reader[0])) if len(list(self.reader))>0 else 0
+        self.length = len(list(self.reader[0])) if list(self.reader) else 0
         
     def create_table(self, **headers):
         '''
@@ -24,7 +24,7 @@ class Table:
         '''
         Checks if Table exists
         '''
-        return True if len(self.reader)>0 else False
+        return len(self.reader) > 0
 
     def reset_length(self):
         self.length = len(self.reader[0]) if len(self.reader)>0 else 0
@@ -40,8 +40,7 @@ class Table:
             self.reader.append(values)
             return True
         elif len(values) < self.length:
-            for i in range(self.length - len(values)):
-                values.append(None)
+            values.extend(None for _ in range(self.length - len(values)))
             self.reader.append(values)
             return True
         else:
@@ -70,7 +69,7 @@ class Table:
 
 class Variables:
     def __init__(self, filename):        
-        self.filename = filename+".dat"
+        self.filename = f"{filename}.dat"
         self.data = {}
         if self.filename in os.listdir():
             with open(self.filename, mode = 'rb') as file:

@@ -30,7 +30,7 @@ class SpotifyAPI(object):
         """
         client_id = self.client_id
         client_secret = self.client_secret
-        if client_secret == None or client_secret == None:
+        if client_secret is None:
             raise Exception('You must set client_ID and client_secret')
         client_creds = f'{client_id}:{client_secret}'
         client_creds_base64 = base64.b64encode(client_creds.encode())
@@ -68,10 +68,7 @@ class SpotifyAPI(object):
         token = self.access_token
         expires = self.access_token_expires
         now = datetime.datetime.now()
-        if expires < now:
-            self.perfom_auth()
-            return self.get_access_token()
-        elif token == None:
+        if expires < now or token is None:
             self.perfom_auth()
             return self.get_access_token()
         return token
@@ -150,24 +147,22 @@ spotify = SpotifyAPI(client_id, client_secret)
 
 
 async def fetch_spotify_playlist(link, num):
+    songs = []
+    images = []
+    album_names = []
+    artist_names = []
+    track_names = []
     if num > 100:
-        songs = []
-        images = []
-        album_names = []
-        artist_names = []
-        track_names = []
         loops_req = int(num // 100 + 1)
         offset = 0
-        for loop in range(loops_req):
+        for _ in range(loops_req):
             data = await spotify.playlist(link=link, num=100, offset=offset)
             for item in range(100):
                 try:
                     none_object = data['items'][item]['track']
                 except IndexError:
                     pass
-                if none_object == None:
-                    pass
-                else:
+                if none_object != None:
                     try:
                         track_name = data['items'][item]['track']['name']
                         artist_name = data['items'][item]['track']['artists'][0]['name']
@@ -183,11 +178,6 @@ async def fetch_spotify_playlist(link, num):
                         pass
             offset += 100
     else:
-        songs = []
-        images = []
-        album_names = []
-        artist_names = []
-        track_names = []
         data = spotify.playlist(link=link, num=num, offset=0)
         for item in range(num):
             try:

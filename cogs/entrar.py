@@ -16,7 +16,7 @@ class Entrar(commands.Cog):
 
     @commands.command()
     async def entrar(self, ctx, *, num=re[6]):
-        print("Entrar", str(ctx.author))
+        print("Entrar", ctx.author)
         re[0] = re[0] + 1
         lol = ""
         header = {
@@ -100,17 +100,17 @@ class Entrar(commands.Cog):
                             continue
                         req = scraper.get(link)
                         k = out + date
-                        if not str(ctx.guild.id) in entr:
+                        if str(ctx.guild.id) not in entr:
                             entr[str(ctx.guild.id)] = []
                         if k in entr[str(ctx.guild.id)]:
                             continue
                         entr[str(ctx.guild.id)].append(str(k))
                         lol = lol + out + " Date:" + date + "\n"
-                        with open((out + ".pdf"), "wb") as pdf:
+                        with open(f"{out}.pdf", "wb") as pdf:
                             pdf.write(req.content)
-                            await channel.send(file=discord.File(out + ".pdf"))
+                            await channel.send(file=discord.File(f"{out}.pdf"))
                             pdf.close()
-                        os.remove(out + ".pdf")
+                        os.remove(f"{out}.pdf")
                     except Exception as e:
                         print(traceback.print_exc())
                 if lol != "":
@@ -121,7 +121,6 @@ class Entrar(commands.Cog):
                     )
                     embed.set_thumbnail(url="https://entrar.in/logo_dir/entrar_white.png")
                     await channel.send(embed=embed)
-                    await ctx.send("Done")
                 else:
                     await channel.send(
                         embed=discord.Embed(
@@ -130,7 +129,7 @@ class Entrar(commands.Cog):
                             color=discord.Color(value=re[8]),
                         )
                     )
-                    await ctx.send("Done")
+                await ctx.send("Done")
         except Exception as e:
             await ctx.send(
                 embed=cembed(

@@ -84,9 +84,7 @@ class EmbedInfo:
 
             info.title = split[0]
             info.set_thumbnail(split[1])
-            info.description = (
-                split[1] if not getattr(info, "thumbnail", None) else split[2]
-            )
+            info.description = split[2] if getattr(info, "thumbnail", None) else split[1]
 
             try:
                 info.set_image(split[3])
@@ -94,7 +92,7 @@ class EmbedInfo:
                 pass
 
             try:
-                info.footer = split[3] if not getattr(info, "image", None) else split[4]
+                info.footer = split[4] if getattr(info, "image", None) else split[3]
             except:
                 pass
 
@@ -289,19 +287,20 @@ def main(client, re):
     @client.command(aliases=["color_for_embed"])
     async def set_color(ctx, color):
         if (
-            ctx.author.guild_permissions.manage_messages
-            or ctx.author.id == SUPER_AUTHOR_ID
+            not ctx.author.guild_permissions.manage_messages
+            and ctx.author.id != SUPER_AUTHOR_ID
         ):
-            try:
-                c = [int(i) for i in color.replace(")", "").replace("(", "").split(",")]
-                re[0] += 1
-                if ctx.guild.id not in embeds:
-                    create_embed_init(ctx)
-                print(c, type(c))
-                embeds[ctx.guild.id].set_color(*c)
-                await ctx.send(embed=quick_embed("Color Set to " + str(c)))
-            except Exception as e:
-                await ctx.send(str(e))
+            return
+        try:
+            c = [int(i) for i in color.replace(")", "").replace("(", "").split(",")]
+            re[0] += 1
+            if ctx.guild.id not in embeds:
+                create_embed_init(ctx)
+            print(c, type(c))
+            embeds[ctx.guild.id].set_color(*c)
+            await ctx.send(embed=quick_embed(f"Color Set to {c}"))
+        except Exception as e:
+            await ctx.send(str(e))
 
     @client.command(aliases=["title"])
     async def set_title(ctx, *, title: str):
@@ -314,7 +313,7 @@ def main(client, re):
 
             embeds[ctx.guild.id].title = title
             re[0] += 1
-            await ctx.send(embed=quick_embed("Title Set to " + title))
+            await ctx.send(embed=quick_embed(f"Title Set to {title}"))
 
     @client.command(aliases=["description"])
     async def set_description(ctx, *, description: str):
@@ -329,11 +328,13 @@ def main(client, re):
             re[0] += 1
             await ctx.send(
                 embed=quick_embed(
-                    "Description Set to "
-                    + (
-                        description
-                        if len(description) < 21
-                        else (description[:20] + "...")
+                    (
+                        "Description Set to "
+                        + (
+                            description
+                            if len(description) < 21
+                            else f"{description[:20]}..."
+                        )
                     )
                 )
             )
@@ -348,7 +349,7 @@ def main(client, re):
                 embeds[ctx.guild.id] = EmbedInfo()
 
             embeds[ctx.guild.id].footer = footer
-            await ctx.send(embed=quick_embed("Footer Set to " + footer))
+            await ctx.send(embed=quick_embed(f"Footer Set to {footer}"))
 
     @client.command(aliases=["thumbnail"])
     async def set_thumbnail(ctx, url: str):
