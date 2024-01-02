@@ -1,17 +1,21 @@
+env
 .env
-.safe.txt
+*.csv
+commands.txt
+*.dat
 Files/
+nextcord/
 .google-cookie
-.recover.txt
-.backup.txt
 Storage.py
+lavalink.out
 nohup.out
 .instagramy_cache/
 *.pyc
+BotInfo.jpg
 __pycache__/
 .pytest_cache/
 venv/
-
+output.png
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -117,7 +121,7 @@ celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
-
+./commands.txt
 # Environments
 .env
 .venv
